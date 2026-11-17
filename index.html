@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Patient Call Simulation</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px 10px;
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      color: #111;
+    }
+
+    .simulation {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 22px;
+      margin: 0 0 18px;
+    }
+
+    .step-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .step-table td {
+      border: 1px solid #6e93e8;
+      vertical-align: middle;
+    }
+
+    .instruction-cell {
+      width: 28%;
+      padding: 18px;
+      text-align: center;
+      background: #edf0f8;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .activity-cell {
+      width: 72%;
+      padding: 18px;
+      text-align: center;
+      background: #dce3f4;
+    }
+
+    .step-title {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    button {
+      padding: 12px 18px;
+      font-size: 15px;
+      cursor: pointer;
+      background: #ffffff;
+      border: 1px solid #777;
+      color: #111;
+    }
+
+    button:disabled {
+      color: #aaa;
+      cursor: not-allowed;
+      border-color: #ccc;
+    }
+
+    .record-box {
+      display: inline-block;
+      background: #ffffff;
+      padding: 14px;
+    }
+
+    #recordStatus {
+      margin-top: 10px;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    .widget-frame {
+      width: 320px;
+      max-width: 100%;
+      height: 270px;
+      margin: 0 auto;
+      background: #ffffff;
+      overflow: visible;
+    }
+
+    #agentFrame {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .lookup-frame {
+      width: 1200px;
+      max-width: 100%;
+      height: 840px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #ffffff;
+    }
+
+    .lookup-fallback {
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    #downloadArea {
+      display: none;
+      margin-top: 15px;
+    }
+
+    #recordingPlayback {
+      width: 100%;
+      max-width: 450px;
+      margin: 10px auto;
+    }
+
+    #downloadRecording {
+      display: inline-block;
+      padding: 10px 15px;
+      border: 1px solid #777;
+      background: #ffffff;
+      color: #111;
+      text-decoration: none;
+    }
+
+    .small-note {
+      font-size: 12px;
+      color: #555;
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 700px) {
+      .step-table,
+      .step-table tbody,
+      .step-table tr,
+      .step-table td {
+        display: block;
+        width: 100%;
+      }
+
+      .instruction-cell,
+      .activity-cell {
+        width: 100%;
+      }
+
+      .lookup-frame {
+        width: 100%;
+        height: 700px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="simulation">
+
+    <h1>Patient Call Simulation</h1>
+
+    <table class="step-table">
+
+      <!-- STEP 1 -->
+      <tr>
+        <td class="instruction-cell">
+          <span class="step-title">STEP 1:</span>
+          Click “Start Recording” and click “Allow” on the pop up.
+        </td>
+
+        <td class="activity-cell">
+          <div class="record-box">
+            <button id="startRecording">
+              ● Start Recording
+            </button>
+          </div>
+
+          <div id="recordStatus" role="status">
+            Recording not started
+          </div>
+        </td>
+      </tr>
+
+
+      <!-- STEP 2 -->
+      <tr>
+        <td class="instruction-cell">
+          <span class="step-title">STEP 2:</span>
+          Click “Start a Call”
+        </td>
+
+        <td class="activity-cell">
+          <div class="widget-frame">
+            <iframe
+              id="agentFrame"
+              title="ElevenLabs patient conversation"
+              allow="microphone; autoplay">
+            </iframe>
+          </div>
+        </td>
+      </tr>
+
+
+      <!-- STEP 3 -->
+      <tr>
+        <td class="instruction-cell">
+          <span class="step-title">STEP 3:</span>
+          Answer the patient’s questions using the database.
+        </td>
+
+        <td class="activity-cell">
+
+          <iframe
+            class="lookup-frame"
+            title="Pharmacy Patient Lookup database"
+            src="https://bakrogh2013.github.io/pharmacy-patient-lookup/"
+            loading="lazy"
+            allow="clipboard-read; clipboard-write">
+          </iframe>
+
+          <p class="lookup-fallback">
+            If the database does not display,
+            <a
+              href="https://bakrogh2013.github.io/pharmacy-patient-lookup/"
+              target="_blank"
+              rel="noopener noreferrer">
+              open the Pharmacy Patient Lookup in a new tab
+            </a>.
+          </p>
+
+        </td>
+      </tr>
+
+
+      <!-- STEP 4 -->
+      <tr>
+        <td class="instruction-cell">
+          <span class="step-title">STEP 4:</span>
+          End the call by clicking the phone icon in the Step 2 window.
+        </td>
+
+        <td class="activity-cell">
+          Return to the patient call window above and click the phone icon to end the conversation.
+        </td>
+      </tr>
+
+
+      <!-- STEP 5 -->
+      <tr>
+        <td class="instruction-cell">
+          <span class="step-title">STEP 5:</span>
+          Click “Stop Recording”
+        </td>
+
+        <td class="activity-cell">
+
+          <div class="record-box">
+            <button id="stopRecording" disabled>
+              ■ Stop Recording
+            </button>
+          </div>
+
+          <div id="downloadArea">
+            <h3>Recording Complete</h3>
+
+            <audio
+              id="recordingPlayback"
+              controls>
+            </audio>
+
+            <br>
+
+            <a id="downloadRecording">
+              Download Recording
+            </a>
+          </div>
+
+        </td>
+      </tr>
+
+
+      <!-- STEP 6 -->
+      <tr>
+        <td class="instruction-cell">
+          <span class="step-title">STEP 6:</span>
+          Upload the recording to Canvas for your teacher to grade.
+        </td>
+
+        <td class="activity-cell">
+          After downloading your recording, return to Canvas and upload the recording to the assignment.
+        </td>
+      </tr>
+
+    </table>
+
+
+    <p class="small-note">
+      In Chrome or Edge, click Start Recording, choose
+      <strong>This Tab</strong>, enable
+      <strong>Share tab audio</strong>, then allow microphone access.
+      Recording will not start without tab audio.
+      Test on the GitHub Pages site directly before using Canvas.
+    </p>
+
+  </main>
+
+
+  <script>
+
+    /*
+      ELEVENLABS PATIENT
+      Replace the agent-id below if you want to use a different patient.
+    */
+
+    const agentFrame = document.getElementById('agentFrame');
+
+    agentFrame.srcdoc = `
+      <!DOCTYPE html>
+      <html>
+
+        <head>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1">
+
+          <style>
+            html,
+            body {
+              margin: 0;
+              width: 100%;
+              height: 100%;
+              overflow: visible;
+              background: #ffffff;
+            }
+          </style>
+        </head>
+
+        <body>
+
+          <elevenlabs-convai
+            agent-id="agent_0801m5z5my99fjzbsx5qwbwj2t2q">
+          </elevenlabs-convai>
+
+          <script
+            src="https://unpkg.com/@elevenlabs/convai-widget-embed"
+            async
+            type="text/javascript">
+          <\/script>
+
+        </body>
+
+      </html>
+    `;
+
+
+    /*
+      RECORDING
+    */
+
+    const startButton =
+      document.getElementById('startRecording');
+
+    const stopButton =
+      document.getElementById('stopRecording');
+
+    const status =
+      document.getElementById('recordStatus');
+
+    const downloadArea =
+      document.getElementById('downloadArea');
+
+
+    let recorder;
+    let microphoneStream;
+    let tabStream;
+    let audioContext;
+    let mixedDestination;
+
+    let chunks = [];
+    let recordingUrl = null;
+
+
+    startButton.addEventListener(
+      'click',
+      async () => {
+
+        startButton.disabled = true;
+
+        downloadArea.style.display = 'none';
+
+        stopButton.disabled = true;
+
+        status.textContent =
+          'Choose This Tab and enable Share tab audio.';
+
+
+        try {
+
+          if (
+            !navigator.mediaDevices?.getDisplayMedia ||
+            !navigator.mediaDevices?.getUserMedia
+          ) {
+
+            throw new Error(
+              'This browser does not support the required recording permissions.'
+            );
+
+          }
+
+
+          /*
+            GET TAB AUDIO FIRST
+          */
+
+          tabStream =
+            await navigator.mediaDevices.getDisplayMedia({
+
+              video: true,
+
+              audio: true,
+
+              preferCurrentTab: true,
+
+              selfBrowserSurface: 'include',
+
+              surfaceSwitching: 'exclude'
+
+            });
+
+
+          if (
+            !tabStream
+              .getAudioTracks()
+              .length
+          ) {
+
+            throw new Error(
+              'No tab audio was shared. Select This Tab and enable Share tab audio, then retry.'
+            );
+
+          }
+
+
+          const videoTrack =
+            tabStream
+              .getVideoTracks()[0];
+
+
+          const settings =
+            videoTrack?.getSettings?.() || {};
+
+
+          if (
+            settings.displaySurface &&
+            settings.displaySurface !== 'browser'
+          ) {
+
+            throw new Error(
+              'Please share This Tab, not a window or the entire screen.'
+            );
+
+          }
+
+
+          status.textContent =
+            'Tab audio connected. Allow microphone access…';
+
+
+          /*
+            MICROPHONE
+          */
+
+          microphoneStream =
+            await navigator.mediaDevices.getUserMedia({
+
+              audio: true
+
+            });
+
+
+          /*
+            MIX TAB AUDIO + MICROPHONE
+          */
+
+          audioContext =
+            new AudioContext();
+
+
+          await audioContext.resume();
+
+
+          mixedDestination =
+            audioContext.createMediaStreamDestination();
+
+
+          audioContext
+            .createMediaStreamSource(
+              microphoneStream
+            )
+            .connect(
+              mixedDestination
+            );
+
+
+          audioContext
+            .createMediaStreamSource(
+              tabStream
+            )
+            .connect(
+              mixedDestination
+            );
+
+
+          /*
+            CREATE RECORDER
+          */
+
+          const mimeType = [
+
+            'audio/webm;codecs=opus',
+
+            'audio/webm',
+
+            'audio/mp4'
+
+          ].find(
+            type =>
+              MediaRecorder
+                .isTypeSupported(type)
+          );
+
+
+          recorder =
+            new MediaRecorder(
+
+              mixedDestination.stream,
+
+              mimeType
+                ? { mimeType }
+                : {}
+
+            );
+
+
+          chunks = [];
+
+
+          recorder.ondataavailable =
+            event => {
+
+              if (
+                event.data &&
+                event.data.size
+              ) {
+
+                chunks.push(
+                  event.data
+                );
+
+              }
+
+            };
+
+
+          recorder.onstop = () => {
+
+            const type =
+              recorder.mimeType ||
+              'audio/webm';
+
+
+            const extension =
+              type.includes('mp4')
+                ? 'm4a'
+                : 'webm';
+
+
+            const blob =
+              new Blob(
+                chunks,
+                { type }
+              );
+
+
+            if (recordingUrl) {
+
+              URL.revokeObjectURL(
+                recordingUrl
+              );
+
+            }
+
+
+            recordingUrl =
+              URL.createObjectURL(
+                blob
+              );
+
+
+            document
+              .getElementById(
+                'recordingPlayback'
+              )
+              .src =
+                recordingUrl;
+
+
+            const link =
+              document.getElementById(
+                'downloadRecording'
+              );
+
+
+            link.href =
+              recordingUrl;
+
+
+            link.download =
+              `Patient-Call-Recording.${extension}`;
+
+
+            downloadArea.style.display =
+              'block';
+
+
+            status.textContent =
+              'Recording stopped';
+
+
+            cleanup();
+
+
+            startButton.disabled =
+              false;
+
+          };
+
+
+          videoTrack?.addEventListener(
+            'ended',
+            () => {
+
+              if (
+                recorder?.state ===
+                'recording'
+              ) {
+
+                stopButton.click();
+
+              }
+
+            }
+          );
+
+
+          recorder.start(1000);
+
+
+          status.textContent =
+            '● Recording microphone and shared tab audio';
+
+
+          stopButton.disabled =
+            false;
+
+
+        } catch (error) {
+
+          console.error(error);
+
+
+          status.textContent =
+            error.message ||
+            'Recording not started. Please retry.';
+
+
+          cleanup();
+
+
+          startButton.disabled =
+            false;
+
+        }
+
+      }
+    );
+
+
+    stopButton.addEventListener(
+      'click',
+      () => {
+
+        stopButton.disabled =
+          true;
+
+
+        if (
+          recorder &&
+          recorder.state !==
+            'inactive'
+        ) {
+
+          recorder.stop();
+
+        }
+
+      }
+    );
+
+
+    function cleanup() {
+
+      microphoneStream
+        ?.getTracks()
+        .forEach(
+          track =>
+            track.stop()
+        );
+
+
+      tabStream
+        ?.getTracks()
+        .forEach(
+          track =>
+            track.stop()
+        );
+
+
+      mixedDestination
+        ?.stream
+        .getTracks()
+        .forEach(
+          track =>
+            track.stop()
+        );
+
+
+      if (
+        audioContext &&
+        audioContext.state !==
+          'closed'
+      ) {
+
+        audioContext.close();
+
+      }
+
+    }
+
+  </script>
+
+</body>
+
+</html>
